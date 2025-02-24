@@ -12,6 +12,9 @@ int main(int argc, char *argv[]) {
 
     build_dns_query(argv[1], query, &query_size);
     int resp_size = send_dns_query(query, query_size, response);
-    printf("response : %s", response);
+
+    if (resp_size > 0) parse_dns_response(response, resp_size);
+    else printf("DNS query failed.\n");
+
     return 0;
 }

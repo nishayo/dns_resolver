@@ -19,5 +19,6 @@ typedef struct {
 
 void build_dns_query(const char *domain, uint8_t *buffer, int *query_size);
 int send_dns_query(uint8_t *query, int query_size, uint8_t *response);
+void parse_dns_response(uint8_t *response, int resp_size);
 
 #endif

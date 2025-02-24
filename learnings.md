@@ -26,3 +26,10 @@ A typical **DNS header** contains the following fields:
 | `ancount` | 16       | **Answer Count** – Number of answers in the response. |
 | `nscount` | 16       | **Authority Record Count** – Number of authoritative name servers in the response. |
 | `arcount` | 16       | **Additional Record Count** – Number of extra records (e.g., for optimizations like EDNS0). |
+
+
+if cname -> req again, if a record -> ip4 addr, if aaaa record -> ipv6 addr
+check if i get hte a record and cname together in a response 
+multiple answers in responses (cname+a, a+aaaa, a+a)
+make a test script for around 100 domain names popular, unpopular, old and new, correct and wrong, 
+bit manipulation where
