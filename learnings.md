@@ -28,8 +28,21 @@ A typical **DNS header** contains the following fields:
 | `arcount` | 16       | **Additional Record Count** – Number of extra records (e.g., for optimizations like EDNS0). |
 
 
-if cname -> req again, if a record -> ip4 addr, if aaaa record -> ipv6 addr
-check if i get hte a record and cname together in a response 
-multiple answers in responses (cname+a, a+aaaa, a+a)
-make a test script for around 100 domain names popular, unpopular, old and new, correct and wrong, 
-bit manipulation where
+A DNS response can have multiple record types:
+
+- **Record Type A**: Used for IPv4 addresses. Example:
+  ```
+  example.com -> 93.184.216.34
+  ```
+- **Record Type AAAA**: Used for IPv6 addresses. Example:
+  ```
+  example.com -> 2606:2800:220:1:248:1893:25c8:1946
+  ```
+- **Record Type CNAME**: Used for domain aliasing, referring to another domain name. Example:
+  ```
+  www.example.com -> example.com
+  ```
+  If the response contains a **CNAME**, we are supposed to **requery** using the new domain name returned.
+
+Additionally, a **DNS response can contain multiple answers**, each having a different IP address.  
+Some domains have **multiple IP addresses** for **load balancing** purposes, distributing traffic across servers.

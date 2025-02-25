@@ -44,19 +44,32 @@ void parse_dns_response(uint8_t *response, int resp_size) {
             printf("IPv6 Address: %s\n", ipv6_str);
         } 
         else if (type == 5) { // CNAME record
-            printf("CNAME: ");
+            char cname[256] = {0}; // Buffer for CNAME
+            int cname_len = 0;
+
             while (response[offset] != 0) {
-                if ((response[offset] & 0xC0) == 0xC0) { // Handle compression
-                    offset = ntohs(*(uint16_t *)(response + offset)) & 0x3FFF;
+                if ((response[offset] & 0xC0) == 0xC0) { // Handle compression // 0xC0 = 11000000
+                    offset = ntohs(*(uint16_t *)(response + offset)) & 0x3FFF; // 0x3FFF = 00111111
                 } else {
                     uint8_t len = response[offset++];
-                    fwrite(response + offset, 1, len, stdout);
-                    printf(".");
+                    memcpy(cname + cname_len, response + offset, len);
+                    cname_len += len;
+                    cname[cname_len++] = '.'; // Add dot separator
                     offset += len;
                 }
             }
-            printf("\n");
-        } 
+
+            if (cname_len > 0) cname[cname_len - 1] = '\0'; // Remove trailing dot
+            printf("CNAME: %s\n", cname);
+
+            // Send a new query for the resolved CNAME
+            uint8_t query[MAX_DNS_PACKET], new_response[MAX_DNS_PACKET];
+            int query_size;
+            build_dns_query(cname, query, &query_size, 1);
+            int new_resp_size = send_dns_query(query, query_size, new_response);
+            if (new_resp_size > 0) parse_dns_response(new_response, new_resp_size);
+            else printf("Failed to resolve CNAME: %s\n", cname);
+        }
         else {
             printf("Unknown record type: %d\n", type);
         }

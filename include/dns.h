@@ -17,7 +17,7 @@ typedef struct {
     uint16_t arcount;
 } __attribute__((packed)) dns_header_t; // specified to no padding between fields of the struct 
 
-void build_dns_query(const char *domain, uint8_t *buffer, int *query_size);
+void build_dns_query(const char *domain, uint8_t *buffer, int *query_size, uint16_t qtype_value);
 int send_dns_query(uint8_t *query, int query_size, uint8_t *response);
 void parse_dns_response(uint8_t *response, int resp_size);
 

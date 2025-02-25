@@ -3,11 +3,12 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 
-void build_dns_query(const char *domain, uint8_t *buffer, int *query_size) {
+void build_dns_query(const char *domain, uint8_t *buffer, int *query_size, uint16_t qtype_value) {
     dns_header_t *header = (dns_header_t *)buffer; // buffer is currently empty
     memset(header, 0, sizeof(dns_header_t)); // initialize the header struct fields as 0
 
-    header->id = htons(0x1234); // random transaction id 
+    uint16_t id = rand() & 0xFFFF;
+    header->id = htons(id); // random transaction id 
     header->flags = htons(0x0100); // specifies standard dns query with recursion desired
     header->qdcount = htons(1); // question count is 1
 
@@ -30,7 +31,7 @@ void build_dns_query(const char *domain, uint8_t *buffer, int *query_size) {
     *qname++ = 0;  // Null terminator
 
     uint16_t *qtype = (uint16_t *)qname;
-    *qtype++ = htons(1);  // A record
+    *qtype++ = htons(qtype_value);  // A or AAAA
     *qtype = htons(1);     // IN class
 
     *query_size = (qname + sizeof(uint16_t) * 2) - buffer;

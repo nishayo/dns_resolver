@@ -26,4 +26,4 @@ clean:
 	rm -rf $(OBJDIR) $(BINDIR)
 
 run: all
-	./$(TARGET) example.com
+	./$(TARGET) www.github.com
